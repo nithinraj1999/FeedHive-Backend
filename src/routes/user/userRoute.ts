@@ -1,12 +1,15 @@
 import express from 'express'
-import authController from "../../controller/authController"
+import {signup,signin} from "../../controller/authController"
+import { getprofileInfo } from '../../controller/profileController';
 
-
-
+import authenticateUser from '../../middlewares/authenticater';
 const router = express.Router();
 
 
-router.get('/signup',authController.signup);
+router.post('/signup',signup);
+router.post('/signin',signin);
+
+router.post('/get-profile-info',authenticateUser,getprofileInfo)
 
 export default router
  
