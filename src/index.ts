@@ -1,5 +1,6 @@
 import express from "express";
 import userRoutes from "./routes/user/userRoute"
+import adminRoutes from "./routes/admin/adminRoute"
 import dotenv from 'dotenv'
 import ErrorHandler from "./middlewares/errorHandler";
 import { connectToMongoDB } from "./config/mongoose";
@@ -17,6 +18,7 @@ app.use(express.json({ limit: '2mb' }))
 app.use(express.urlencoded({ limit: '2mb', extended: true }))
  
 app.use('/api',userRoutes)
+app.use('/api/admin',adminRoutes)
 
 app.use(ErrorHandler)
 

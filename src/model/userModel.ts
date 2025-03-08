@@ -28,6 +28,7 @@ const UserSchema = new Schema<IUser>(
   { timestamps: true }
 );
 
+
 UserSchema.pre("save",async function (next) {
   this.firstName = this.firstName.charAt(0).toUpperCase() + this.firstName.slice(1).toLowerCase();
   this.lastName = this.lastName.charAt(0).toUpperCase() + this.lastName.slice(1).toLowerCase();
