@@ -1,6 +1,6 @@
 import { Request,Response,NextFunction } from "express"
-import { userModel } from "../model/userModel";
-import { generateAccessToken } from "../services/jwt";
+import { userModel } from "../../model/userModel";
+import { generateAccessToken } from "../../services/jwt";
 import bcrypt from "bcrypt";
 
 
@@ -36,8 +36,6 @@ export const signin = async (req:Request,res:Response,next:NextFunction)=>{
             return 
         }
         const isMatch = await bcrypt.compare(password.toString(), user.password);
-        
-        
         if (!isMatch) {
            res.status(400).json({ success: false, message: "Invalid email or password" });
            return 

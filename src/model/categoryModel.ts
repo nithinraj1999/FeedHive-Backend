@@ -1,7 +1,7 @@
 import { Schema, model, Document } from "mongoose";
 
 interface ICategory extends Document {
-    name: string;
+    categoryName: string;
     description:string;
     createdAt: Date;
     updatedAt: Date;
@@ -9,7 +9,7 @@ interface ICategory extends Document {
   
 const CategorySchema = new Schema<ICategory>(
     {
-      name: { type: String, required: true, unique: true },
+      categoryName: { type: String, required: true, unique: true },
       description: { type: String, required: true},
     },
     { timestamps: true }
