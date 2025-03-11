@@ -2,6 +2,7 @@ import { Request,Response,NextFunction } from "express"
 import { AuthRequest } from "../../middlewares/authenticater";
 import ArticleModel from "../../model/articleModel";
 import { uploadArticleImage } from "../../services/cloudinary";
+import { userModel } from "../../model/userModel";
 
 export const creteArticle = async(req:AuthRequest,res:Response,next:NextFunction)=>{
    try{
@@ -56,7 +57,10 @@ export const editArticle = async (req: AuthRequest, res: Response, next: NextFun
 
 export const getAllArticles = async(req: AuthRequest, res: Response, next: NextFunction)=>{
     try{
-        const allArticles = await ArticleModel.find({})
+        const {userId} = req.body
+        const user = await userModel.findById(userId);
+        const blockedArticles = user?.blockedArticles
+        const allArticles = await ArticleModel.find({_id: { $nin: blockedArticles }})
         res.json({success:true,allArticles:allArticles})
     }catch(error){
         next(error)
@@ -83,4 +87,35 @@ export const getMyArticles = async(req: AuthRequest, res: Response, next: NextFu
     }catch(error){
         next(error)
     }
+}
+
+
+export const blockArticle = async (req: AuthRequest, res: Response, next: NextFunction)=>{
+    try{
+        const {userId,articleId} = req.body
+        const blockArticle  =  await userModel.findByIdAndUpdate(userId, {
+            $addToSet: { blockedArticles: articleId }
+          });
+          const incBlockedCount = await ArticleModel.findByIdAndUpdate(
+            articleId,
+            { $inc: { blockCount: 1 } }, 
+
+          );
+          res.json({success:true})
+     }catch(error){
+              next(next)
+    }
+}
+
+
+export const likeArticle = async(req: AuthRequest, res: Response, next: NextFunction)=>{
+    const {userId,articleId} = req.body
+    const blockArticle  =  await userModel.findByIdAndUpdate(userId, {
+        $addToSet: { likedArticle: articleId }
+      });
+    const incLikes = await ArticleModel.findByIdAndUpdate(
+        articleId,
+        { $inc: { blockCount: 1 } }, 
+
+      );
 }

@@ -23,7 +23,6 @@ const ArticleSchema = new Schema<IArticle>(
     likes:{ type: Number, required: true },
     dislikes:{ type: Number, required: true },
     blockCount:{type: Number, required: true },
-    isBlock:{type: Boolean, default:false},
     image: { type: String,required:true },
     tags: [{ type: String }],
     category: { type: Schema.Types.ObjectId, ref:"Category", required: true },

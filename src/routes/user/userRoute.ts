@@ -9,7 +9,8 @@ import { editProfile } from "../../controller/userController/profileController";
 import { editArticle } from "../../controller/userController/articleController";
 import { getAllArticles } from "../../controller/userController/articleController";
 import { deleteArticle } from "../../controller/userController/articleController";
-
+import { blockArticle } from "../../controller/userController/articleController";
+import { likeArticle } from "../../controller/userController/articleController";
 const router = express.Router();
 
 router.post("/signup", signup);
@@ -21,5 +22,6 @@ router.patch("/edit-profile", editProfile);
 router.patch("/edit-article", editArticle);
 router.get("/get-all-articles", getAllArticles);
 router.delete("/delete-article",deleteArticle);
-
+router.patch('/block-article',blockArticle)
+router.patch('/like-article',likeArticle)
 export default router;

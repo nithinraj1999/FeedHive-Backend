@@ -7,6 +7,8 @@ interface IUser extends Document {
   email: string;
   phone: string;
   password: string;
+  blockedArticles:Schema.Types.ObjectId[];
+  likedArticle:Schema.Types.ObjectId[];
   dob: Date;
   role: "user" | "admin"; 
   preferences: Schema.Types.ObjectId[]; 
@@ -21,6 +23,8 @@ const UserSchema = new Schema<IUser>(
     email: { type: String, required: true, unique: true },
     phone: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    blockedArticles: [{ type:Schema.Types.ObjectId, ref: "Article" }],
+    likedArticle: [{ type:Schema.Types.ObjectId, ref: "Article" }],
     dob: { type: Date, required: true },
     role: { type: String, enum: ["user", "admin"], default: "user" }, 
     preferences: [{ type: Schema.Types.ObjectId, ref: "Category" }], 
