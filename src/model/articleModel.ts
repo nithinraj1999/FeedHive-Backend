@@ -20,12 +20,12 @@ const ArticleSchema = new Schema<IArticle>(
     userId:{type:Schema.Types.ObjectId,ref:"User",required:true},
     articleName: { type: String, required: true, trim: true },
     description: { type: String, required: true },
-    likes:{ type: Number, required: true },
-    dislikes:{ type: Number, required: true },
-    blockCount:{type: Number, required: true },
+    likes:{ type: Number, default: 0},
+    dislikes:{ type: Number, default: 0 },
+    blockCount:{type: Number, default: 0 },
     image: { type: String,required:true },
     tags: [{ type: String }],
-    category: { type: Schema.Types.ObjectId, ref:"Category", required: true },
+    category: { type: Schema.Types.ObjectId, ref:"Category",required: true },
   },
   { timestamps: true }
 );

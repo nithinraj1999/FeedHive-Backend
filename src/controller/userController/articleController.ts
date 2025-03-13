@@ -6,15 +6,16 @@ import { userModel } from "../../model/userModel";
 
 export const creteArticle = async(req:AuthRequest,res:Response,next:NextFunction)=>{
    try{
-        const {userId,articleName,description,tags,categoryId} = req.body
+        const {userId,articleName,description,tags,category} = req.body
         const image = req.file?.buffer
-        
+        const tagsArray = tags.split(",");
+
         let imageUrl 
         if(image){
             const coudinaryUpload = await uploadArticleImage(image)
             imageUrl = coudinaryUpload.url            
         }
-        const newArticle = new ArticleModel({ userId:userId,articleName,description,tags,category:categoryId,image:imageUrl });
+        const newArticle = new ArticleModel({ userId:userId,articleName,description,tags:tagsArray,category:category,image:imageUrl });
         await newArticle.save();
         res.json({success:true})
    }catch(error){
@@ -25,19 +26,26 @@ export const creteArticle = async(req:AuthRequest,res:Response,next:NextFunction
 export const editArticle = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         const { articleId, articleName, description, tags, categoryId } = req.body;
-
+        const image = req.file?.buffer
+        console.log(req.file);
+        
         if (!articleId) {
              res.status(400).json({ message: "Article ID is required" });
              return
         }
-
-        const updateFields: Partial<{ articleName: string; description: string; tags: string[]; categoryId: string }> = {};
+        let imageUrl 
+        if(image){
+            const coudinaryUpload = await uploadArticleImage(image)
+            imageUrl = coudinaryUpload.url            
+        }
+        const updateFields: Partial<{ articleName: string; description: string; tags: string[]; categoryId: string,image:string }> = {};
 
         if (articleName) updateFields.articleName = articleName;
         if (description) updateFields.description = description;
-        if (tags) updateFields.tags = tags;
+        if (tags) updateFields.tags = tags.split(',');
         if (categoryId) updateFields.categoryId = categoryId;
-
+        if(imageUrl) updateFields.image = imageUrl;
+        // if(req.file)
         const updatedArticle = await ArticleModel.findByIdAndUpdate(
             articleId,
             { $set: updateFields },
@@ -48,25 +56,41 @@ export const editArticle = async (req: AuthRequest, res: Response, next: NextFun
              res.status(404).json({ message: "Article not found" });
              return
         }
-        res.status(200).json({ message: "Article updated successfully", article: updatedArticle });
+        res.status(200).json({ success:true,message: "Article updated successfully", article: updatedArticle });
     } catch (error) {
         next(error);
     }
 };
 
 
-export const getAllArticles = async(req: AuthRequest, res: Response, next: NextFunction)=>{
-    try{
-        const {userId} = req.body
-        const user = await userModel.findById(userId);
-        const blockedArticles = user?.blockedArticles
-        const allArticles = await ArticleModel.find({_id: { $nin: blockedArticles }})
-        res.json({success:true,allArticles:allArticles})
-    }catch(error){
-        next(error)
-    }
-}
+import mongoose from "mongoose";
 
+export const getAllArticles = async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+        const { userId } = req.body;
+        const user = await userModel.findById(userId);
+
+        if (!user) {
+            res.status(404).json({ success: false, message: "User not found" });
+            return;
+        }
+
+        const preference = user.preferences || [];
+        const blockedArticles = user.blockedArticles || []; 
+
+        const preferenceObjectIds = preference.map(id => new mongoose.Types.ObjectId(id));
+
+
+        const allArticles = await ArticleModel.find({
+            _id: { $nin: blockedArticles },
+            category: { $in: preferenceObjectIds } 
+        });
+
+        res.json({ success: true, allArticles });
+    } catch (error) {
+        next(error);
+    }
+};
 
 export const deleteArticle = async(req: AuthRequest, res: Response, next: NextFunction)=>{
     try{
@@ -90,6 +114,16 @@ export const getMyArticles = async(req: AuthRequest, res: Response, next: NextFu
 }
 
 
+export const viewAricle = async(req: AuthRequest, res: Response, next: NextFunction)=>{
+    try{
+        const {articleId} = req.body
+        const article = await ArticleModel.findOne({_id:articleId})
+        res.json({success:true,article:article})
+    }catch(error){
+        next(error)
+    }
+}
+
 export const blockArticle = async (req: AuthRequest, res: Response, next: NextFunction)=>{
     try{
         const {userId,articleId} = req.body
@@ -109,13 +143,46 @@ export const blockArticle = async (req: AuthRequest, res: Response, next: NextFu
 
 
 export const likeArticle = async(req: AuthRequest, res: Response, next: NextFunction)=>{
-    const {userId,articleId} = req.body
-    const blockArticle  =  await userModel.findByIdAndUpdate(userId, {
-        $addToSet: { likedArticle: articleId }
-      });
-    const incLikes = await ArticleModel.findByIdAndUpdate(
-        articleId,
-        { $inc: { blockCount: 1 } }, 
+    try{
+        const {userId,articleId} = req.body
+        console.log(req.body);
+        
+        const like  =  await userModel.findByIdAndUpdate(userId, {
+            $addToSet: { likedArticle: articleId }
+          });
+        const incLikes = await ArticleModel.findByIdAndUpdate(
+            articleId,
+            { $inc: { likes: 1 } }, {new:true}
+          );
+    console.log(incLikes);
+    
+          res.json({success:true})
+    }catch(error){
+        next(error);
+    }
+    
+}
 
-      );
+export const dislikeArticle = async(req: AuthRequest, res: Response, next: NextFunction)=>{
+
+    try{
+        const {userId,articleId} = req.body
+        if (!userId || !articleId) {
+            res.status(400).json({ success: false, message: "User ID and Article ID are required" });
+            return
+        }
+        const blockArticle  =  await userModel.findByIdAndUpdate(userId, {
+            $addToSet: { dislikedArticle: articleId }
+          });
+
+          if(blockArticle){
+            const incLikes = await ArticleModel.findByIdAndUpdate(
+                articleId,
+                { $inc: { dislikes: 1 } }, 
+              );
+          }
+          res.json({success:true})
+    }catch(error){
+        next(error);
+    }
 }

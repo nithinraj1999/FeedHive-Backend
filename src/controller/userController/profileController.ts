@@ -17,10 +17,10 @@ export const getprofileInfo = async (req:AuthRequest,res:Response,next:NextFunct
         next(error)
     }
 }
-
+ 
 export const getAllCategories = async(req:AuthRequest,res:Response,next:NextFunction)=>{
     try{
-        const allCategories = await categoryModel.find({})
+        const allCategories = await categoryModel.find({},{_id:1,categoryName:1})
         res.json({success:true,allCategories:allCategories})
     }catch(error){
         next(error)
@@ -29,8 +29,16 @@ export const getAllCategories = async(req:AuthRequest,res:Response,next:NextFunc
 
 export const selectCategories = async(req:AuthRequest,res:Response,next:NextFunction)=>{
     try{
-        const {userId,categoryId} = req.body
-        const updatedCategory = await userModel.updateOne({_id:userId},{ $addToSet: { preferences: categoryId}})
+        console.log("hhhh");
+        
+        const {userId,categoryId,categoryName} = req.body
+        console.log(req.body);
+        const updatedCategory = await userModel.findByIdAndUpdate(
+            userId,
+            { $addToSet: { preferences: { $each: categoryId } } },
+            { new: true }
+        );
+        
         res.json({success:true})
     }catch(error){
         next(error)

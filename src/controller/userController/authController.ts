@@ -3,7 +3,6 @@ import { userModel } from "../../model/userModel";
 import { generateAccessToken } from "../../services/jwt";
 import bcrypt from "bcrypt";
 
-
 export const signup = async (req:Request,res:Response,next:NextFunction)=>{
     try{
         const {firstName,lastName,email,phone,dateOfBirth,password,confirmPassword} = req.body
@@ -19,13 +18,12 @@ export const signup = async (req:Request,res:Response,next:NextFunction)=>{
         
         const newUser = new userModel({ firstName, lastName, email, phone, password, dob:dateOfBirth });
         await newUser.save();
-        res.status(201).json({ message: "User registered successfully" });
-
+        res.status(201).json({ success:true,message: "User registered successfully",newUserId:newUser._id});
+ 
     }catch(error){
         next(error)
     }
 }
-
 
 export const signin = async (req:Request,res:Response,next:NextFunction)=>{
     try{
@@ -44,8 +42,8 @@ export const signin = async (req:Request,res:Response,next:NextFunction)=>{
         const accessToken = generateAccessToken(payload)
 
         res.cookie("accessToken", accessToken, {
-            httpOnly: true, 
-            secure: process.env.NODE_ENV === "production",
+            httpOnly: true,
+            secure: false,
             sameSite: "strict", 
             maxAge: 10 * 24 * 60 * 60 * 1000, 
           });

@@ -6,6 +6,8 @@ interface CustomError extends Error {
 
 const ErrorHandler = (err:CustomError, req:Request, res:Response,next:NextFunction) => {
     console.log("Middleware Error Hadnling");
+    console.log(err);
+    
     const errStatus = err.statusCode || 500;
     const errMsg = err.message || 'Something went wrong';
     res.status(errStatus).json({

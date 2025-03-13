@@ -9,9 +9,10 @@ interface IUser extends Document {
   password: string;
   blockedArticles:Schema.Types.ObjectId[];
   likedArticle:Schema.Types.ObjectId[];
+  dislikedArticle:Schema.Types.ObjectId[];
   dob: Date;
   role: "user" | "admin"; 
-  preferences: Schema.Types.ObjectId[]; 
+  preferences: string[]; 
   createdAt: Date;
   updatedAt: Date;
 }
@@ -25,9 +26,10 @@ const UserSchema = new Schema<IUser>(
     password: { type: String, required: true },
     blockedArticles: [{ type:Schema.Types.ObjectId, ref: "Article" }],
     likedArticle: [{ type:Schema.Types.ObjectId, ref: "Article" }],
+    dislikedArticle: [{ type:Schema.Types.ObjectId, ref: "Article" }],
     dob: { type: Date, required: true },
     role: { type: String, enum: ["user", "admin"], default: "user" }, 
-    preferences: [{ type: Schema.Types.ObjectId, ref: "Category" }], 
+    preferences: [{ type: String, required: true }], 
   },
   { timestamps: true }
 );
