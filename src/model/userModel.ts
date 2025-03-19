@@ -29,7 +29,7 @@ const UserSchema = new Schema<IUser>(
     dislikedArticle: [{ type:Schema.Types.ObjectId, ref: "Article" }],
     dob: { type: Date, required: true },
     role: { type: String, enum: ["user", "admin"], default: "user" }, 
-    preferences: [{ type: String, required: true }], 
+    preferences: [{  type:Schema.Types.ObjectId, ref: "Category" }], 
   },
   { timestamps: true }
 );

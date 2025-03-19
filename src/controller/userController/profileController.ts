@@ -7,7 +7,8 @@ import { categoryModel } from "../../model/categoryModel";
 export const getprofileInfo = async (req:AuthRequest,res:Response,next:NextFunction)=>{
     try{
         const {userId} = req.body
-        const profileInfo = await userModel.findOne({_id:userId})
+        const profileInfo = await userModel.findOne({_id:userId}).populate("preferences")
+        
         if (profileInfo) {
             res.json({ success: true, data: profileInfo });
         } else {
@@ -29,7 +30,6 @@ export const getAllCategories = async(req:AuthRequest,res:Response,next:NextFunc
 
 export const selectCategories = async(req:AuthRequest,res:Response,next:NextFunction)=>{
     try{
-        console.log("hhhh");
         
         const {userId,categoryId,categoryName} = req.body
         console.log(req.body);

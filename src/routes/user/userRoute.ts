@@ -21,18 +21,18 @@ router.post("/signup", signup);
 router.post("/signin", signin);
 
 router.post("/get-profile-info", authenticateUser, getprofileInfo);
-router.get("/get-all-categories", getAllCategories);
-router.post('/select-category',selectCategories)
-router.post("/create-article", upload.single("image"),creteArticle);
-router.post("/view-article",viewAricle)
-router.patch("/edit-profile",editProfile);
-router.post('/my-articles',getMyArticles)
+router.get("/get-all-categories",authenticateUser, getAllCategories);
+router.post('/select-category',authenticateUser,selectCategories)
+router.post("/create-article",authenticateUser, upload.single("image"),creteArticle);
+router.post("/view-article",authenticateUser,viewAricle)
+router.patch("/edit-profile",authenticateUser,editProfile);
+router.post('/my-articles',authenticateUser,getMyArticles)
 router.put("/edit-article",upload.single("image"), editArticle);
-router.post("/get-all-articles", getAllArticles);
-router.delete("/delete-article", deleteArticle);
-router.patch("/block-article", blockArticle);
-router.patch("/like-article", likeArticle);
-router.patch("/dislike-article",dislikeArticle);
+router.post("/get-all-articles",authenticateUser, getAllArticles);
+router.delete("/delete-article",authenticateUser, deleteArticle);
+router.patch("/block-article",authenticateUser, blockArticle);
+router.patch("/like-article",authenticateUser, likeArticle);
+router.patch("/dislike-article",authenticateUser,dislikeArticle);
 
 export default router; 
   

@@ -18,6 +18,9 @@ export const signup = async (req:Request,res:Response,next:NextFunction)=>{
         
         const newUser = new userModel({ firstName, lastName, email, phone, password, dob:dateOfBirth });
         await newUser.save();
+
+
+        
         res.status(201).json({ success:true,message: "User registered successfully",newUserId:newUser._id});
  
     }catch(error){
@@ -28,7 +31,8 @@ export const signup = async (req:Request,res:Response,next:NextFunction)=>{
 export const signin = async (req:Request,res:Response,next:NextFunction)=>{
     try{
         const {email,password} = req.body
-        const user = await userModel.findOne({email:email})
+        const user = await userModel.findOne({email:email}).populate("preferences")
+        
         if(!user){
             res.status(400).json({ success: false, message: "Invalid email or password" });
             return 
