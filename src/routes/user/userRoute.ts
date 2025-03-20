@@ -32,6 +32,7 @@ router.put("/edit-article",upload.single("image"), editArticle);
 router.post("/get-all-articles",authenticateUser, getAllArticles);
 router.delete("/delete-article",authenticateUser, deleteArticle);
 router.patch("/block-article",authenticateUser, blockArticle);
+
 router.patch("/like-article",authenticateUser, likeArticle);
 router.patch("/dislike-article",authenticateUser,dislikeArticle);
 

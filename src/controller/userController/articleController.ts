@@ -142,98 +142,6 @@ export const blockArticle = async (req: AuthRequest, res: Response, next: NextFu
 }
 
 
-// export const likeArticle = async(req: AuthRequest, res: Response, next: NextFunction)=>{
-//     try{
-//         const {userId,articleId} = req.body
-
-//         if (!userId || !articleId) {
-//            res.status(400).json({ success: false, message: "User ID and Article ID are required" });
-//            return 
-//         }
-
-//         const user = await userModel.findOne({ _id: userId, likedArticle: articleId });
-
-//         let updateUser, updateArticle;
-        
-//         if (user) {
-//             updateUser = await userModel.updateOne(
-//                 { _id: userId },
-//                 { $pull: { likedArticle: articleId } }
-//             );
-//             updateArticle = await ArticleModel.findByIdAndUpdate(
-//                 articleId,
-//                 { $inc: { likes: -1 } },
-//                 { new: true }
-//             );
-//         } else {
-//             // If user hasn't liked it, add the like
-//             updateUser = await userModel.updateOne(
-//                 { _id: userId },
-//                 { $addToSet: { likedArticle: articleId } }
-//             );
-
-//             updateArticle = await ArticleModel.findByIdAndUpdate(
-//                 articleId,
-//                 { $inc: { likes: 1 } },
-//                 { new: true }
-//             );
-//         }
-
-
-//           res.json({success:true})
-//     }catch(error){
-//         next(error);
-//     }
-    
-// }
-
-// export const dislikeArticle = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
-//     try {
-//         const { userId, articleId } = req.body;
-
-//         if (!userId || !articleId) {
-//             res.status(400).json({ success: false, message: "User ID and Article ID are required" });
-//             return;
-//         }
-
-//         const user = await userModel.findOne({ _id: userId, dislikedArticle: articleId });
-
-//         let updateUser, updateArticle;
-
-//         if (user) {
-//             // If already disliked, remove from the list (undislike)
-//             updateUser = await userModel.updateOne(
-//                 { _id: userId },
-//                 { $pull: { dislikedArticle: articleId } }
-//             );
-
-//             updateArticle = await ArticleModel.findByIdAndUpdate(
-//                 articleId,
-//                 { $inc: { dislikes: -1 } }, 
-//                 { new: true }
-//             );
-//         } else {
-//             // If not disliked yet, add to disliked list
-//             updateUser = await userModel.updateOne(
-//                 { _id: userId },
-//                 { $addToSet: { dislikedArticle: articleId } }
-//             );
-
-//             updateArticle = await ArticleModel.findByIdAndUpdate(
-//                 articleId,
-//                 { $inc: { dislikes: 1 } }, // Increase dislike count
-//                 { new: true }
-//             );
-//         }
-
-//         res.json({ success: true, updatedArticle: updateArticle });
-//         return;
-//     } catch (error) {
-//         next(error);
-//         return;
-//     }
-// };
-
 export const likeArticle = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         const { userId, articleId } = req.body;
@@ -254,29 +162,24 @@ export const likeArticle = async (req: AuthRequest, res: Response, next: NextFun
         let likeIncrement = 0, dislikeIncrement = 0;
 
         if (user.likedArticle.includes(articleId)) {
-            // Remove the like
             await userModel.updateOne({ _id: userId }, { $pull: { likedArticle: articleId } });
             likeIncrement = -1;
         } else {
-            // If user had disliked it, remove the dislike first
             if (user.dislikedArticle.includes(articleId)) {
                 await userModel.updateOne({ _id: userId }, { $pull: { dislikedArticle: articleId } });
                 dislikeIncrement = -1;
             }
-
-            // Add the like
             await userModel.updateOne({ _id: userId }, { $addToSet: { likedArticle: articleId } });
             likeIncrement = 1;
         }
 
-        // Update article like/dislike count only if necessary
         updateArticle = await ArticleModel.findByIdAndUpdate(
             articleId,
             { $inc: { likes: likeIncrement, dislikes: dislikeIncrement } },
             { new: true }
         );
-
-        res.json({ success: true, updatedArticle: updateArticle });
+        const userData = await userModel.findOne({_id:userId})
+        res.json({ success: true, updatedArticle: updateArticle,userData:userData });
     } catch (error) {
         next(error);
     }
@@ -302,29 +205,25 @@ export const dislikeArticle = async (req: AuthRequest, res: Response, next: Next
         let likeIncrement = 0, dislikeIncrement = 0;
 
         if (user.dislikedArticle.includes(articleId)) {
-            // Remove the dislike
             await userModel.updateOne({ _id: userId }, { $pull: { dislikedArticle: articleId } });
             dislikeIncrement = -1;
         } else {
-            // If user had liked it, remove the like first
             if (user.likedArticle.includes(articleId)) {
                 await userModel.updateOne({ _id: userId }, { $pull: { likedArticle: articleId } });
                 likeIncrement = -1;
             }
-
-            // Add the dislike
             await userModel.updateOne({ _id: userId }, { $addToSet: { dislikedArticle: articleId } });
             dislikeIncrement = 1;
         }
 
-        // Update article like/dislike count only if necessary
         updateArticle = await ArticleModel.findByIdAndUpdate(
             articleId,
             { $inc: { likes: likeIncrement, dislikes: dislikeIncrement } },
             { new: true }
         );
+        const userData = await userModel.findOne({_id:userId})
 
-        res.json({ success: true, updatedArticle: updateArticle });
+        res.json({ success: true, updatedArticle: updateArticle,userData:userData });
     } catch (error) {
         next(error);
     }
