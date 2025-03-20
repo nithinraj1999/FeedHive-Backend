@@ -12,7 +12,7 @@ dotenv.config()
 const app = express();
 app.use(
   cors({
-    origin:`${process.env.FRONTEND_URL}`, 
+    origin:process.env.FRONTEND_URL, 
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], 
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,  
@@ -21,7 +21,7 @@ app.use(
 
 app.use(cookieParser());
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 connectToMongoDB()
 app.use(express.json({ limit: '2mb' }))
