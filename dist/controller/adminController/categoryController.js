@@ -14,10 +14,11 @@ const categoryModel_1 = require("../../model/categoryModel");
 const addCategory = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { categoryName, description } = req.body;
-        const newUser = new categoryModel_1.categoryModel({ categoryName, description });
-        yield newUser.save();
-        if (newUser) {
-            res.status(201).json({ message: "category saved" });
+        console.log(req.body);
+        const newcategory = new categoryModel_1.categoryModel({ categoryName, description });
+        yield newcategory.save();
+        if (newcategory) {
+            res.status(201).json({ message: "category saved..." });
         }
     }
     catch (error) {

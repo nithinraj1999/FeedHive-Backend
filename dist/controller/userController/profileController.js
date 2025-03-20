@@ -15,7 +15,7 @@ const categoryModel_1 = require("../../model/categoryModel");
 const getprofileInfo = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.body;
-        const profileInfo = yield userModel_1.userModel.findOne({ _id: userId });
+        const profileInfo = yield userModel_1.userModel.findOne({ _id: userId }).populate("preferences");
         if (profileInfo) {
             res.json({ success: true, data: profileInfo });
         }
@@ -30,7 +30,7 @@ const getprofileInfo = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
 exports.getprofileInfo = getprofileInfo;
 const getAllCategories = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const allCategories = yield categoryModel_1.categoryModel.find({});
+        const allCategories = yield categoryModel_1.categoryModel.find({}, { _id: 1, categoryName: 1 });
         res.json({ success: true, allCategories: allCategories });
     }
     catch (error) {
@@ -40,8 +40,9 @@ const getAllCategories = (req, res, next) => __awaiter(void 0, void 0, void 0, f
 exports.getAllCategories = getAllCategories;
 const selectCategories = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { userId, categoryId } = req.body;
-        const updatedCategory = yield userModel_1.userModel.updateOne({ _id: userId }, { $addToSet: { preferences: categoryId } });
+        const { userId, categoryId, categoryName } = req.body;
+        console.log(req.body);
+        const updatedCategory = yield userModel_1.userModel.findByIdAndUpdate(userId, { $addToSet: { preferences: { $each: categoryId } } }, { new: true });
         res.json({ success: true });
     }
     catch (error) {

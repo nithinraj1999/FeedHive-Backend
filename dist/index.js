@@ -10,14 +10,21 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const errorHandler_1 = __importDefault(require("./middlewares/errorHandler"));
 const mongoose_1 = require("./config/mongoose");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const cors_1 = __importDefault(require("cors"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
+app.use((0, cors_1.default)({
+    origin: `${process.env.FRONTEND_URL}`,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+}));
 app.use((0, cookie_parser_1.default)());
 const PORT = process.env.PORT || 3000;
 (0, mongoose_1.connectToMongoDB)();
 app.use(express_1.default.json({ limit: '2mb' }));
 app.use(express_1.default.urlencoded({ limit: '2mb', extended: true }));
-app.use('/api', userRoute_1.default);
+app.use('/api/', userRoute_1.default);
 app.use('/api/admin', adminRoute_1.default);
 app.use(errorHandler_1.default);
 app.listen(PORT, () => {

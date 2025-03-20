@@ -17,6 +17,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const connectToMongoDB = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const mongoUri = process.env.MONGODB_ORIGIN;
+        console.log(mongoUri);
         if (!mongoUri) {
             throw new Error('MongoDB connection string is undefined');
         }

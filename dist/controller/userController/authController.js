@@ -30,7 +30,7 @@ const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         }
         const newUser = new userModel_1.userModel({ firstName, lastName, email, phone, password, dob: dateOfBirth });
         yield newUser.save();
-        res.status(201).json({ message: "User registered successfully" });
+        res.status(201).json({ success: true, message: "User registered successfully", newUserId: newUser._id });
     }
     catch (error) {
         next(error);
@@ -40,25 +40,26 @@ exports.signup = signup;
 const signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = req.body;
-        const user = yield userModel_1.userModel.findOne({ email: email });
+        const user = yield userModel_1.userModel.findOne({ email: email }).populate("preferences");
         if (!user) {
             res.status(400).json({ success: false, message: "Invalid email or password" });
-            return;
         }
-        const isMatch = yield bcrypt_1.default.compare(password.toString(), user.password);
-        if (!isMatch) {
-            res.status(400).json({ success: false, message: "Invalid email or password" });
-            return;
+        else {
+            const isMatch = yield bcrypt_1.default.compare(password.toString(), user.password);
+            if (!isMatch) {
+                res.status(400).json({ success: false, message: "Invalid email or password" });
+                return;
+            }
+            const payload = { email: user.email, userId: user._id, role: user.role };
+            const accessToken = (0, jwt_1.generateAccessToken)(payload);
+            res.cookie("accessToken", accessToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: "strict",
+                maxAge: 10 * 24 * 60 * 60 * 1000,
+            });
+            res.status(200).json({ success: true, message: "Login successful!", userData: user });
         }
-        const payload = { email: user.email, userId: user._id, role: user.role };
-        const accessToken = (0, jwt_1.generateAccessToken)(payload);
-        res.cookie("accessToken", accessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            maxAge: 10 * 24 * 60 * 60 * 1000,
-        });
-        res.status(200).json({ success: true, message: "Login successful!", userData: user });
     }
     catch (error) {
         next(error);
