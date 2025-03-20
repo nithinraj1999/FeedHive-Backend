@@ -10,8 +10,6 @@ import cors from "cors";
 dotenv.config()
 
 const app = express();
-console.log(process.env.FRONTEND_URL);
-
 app.use(
   cors({
     origin:process.env.FRONTEND_URL, 
@@ -20,6 +18,7 @@ app.use(
     credentials: true,  
   })
 );
+console.log(process.env.FRONTEND_URL);
 
 app.use(cookieParser());
 
