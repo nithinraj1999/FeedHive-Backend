@@ -47,8 +47,8 @@ export const signin = async (req:Request,res:Response,next:NextFunction)=>{
     
             res.cookie("accessToken", accessToken, {
                 httpOnly: true,
-                secure: false,
-                sameSite: "strict", 
+                secure: true,
+                sameSite: "none", 
                 maxAge: 10 * 24 * 60 * 60 * 1000, 
               });
             res.status(200).json({ success: true, message: "Login successful!", userData:user });

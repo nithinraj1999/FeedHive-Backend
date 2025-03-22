@@ -54,8 +54,8 @@ const signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
             const accessToken = (0, jwt_1.generateAccessToken)(payload);
             res.cookie("accessToken", accessToken, {
                 httpOnly: true,
-                secure: false,
-                sameSite: "strict",
+                secure: true,
+                sameSite: "none",
                 maxAge: 10 * 24 * 60 * 60 * 1000,
             });
             res.status(200).json({ success: true, message: "Login successful!", userData: user });
