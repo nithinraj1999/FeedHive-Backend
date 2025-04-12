@@ -91,5 +91,5 @@ FeedHive is a modern blogging platform built with **TypeScript**, **React**, **N
 - Add comments section
 - Social sharing of blogs
 - Dark mode UI
-
+- Blog recommendation
 ---
