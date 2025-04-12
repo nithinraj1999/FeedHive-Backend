@@ -6,7 +6,7 @@ import ErrorHandler from "./middlewares/errorHandler";
 import { connectToMongoDB } from "./config/mongoose";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-
+ 
 dotenv.config()
 
 const app = express();

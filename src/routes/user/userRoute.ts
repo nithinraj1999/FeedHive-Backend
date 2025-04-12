@@ -17,7 +17,7 @@ import { getMyArticles } from "../../controller/userController/articleController
 import { selectCategories } from "../../controller/userController/profileController";
 
 const router = express.Router();
-  
+   
 router.post("/signup", signup);
 router.post("/signin", signin);
 

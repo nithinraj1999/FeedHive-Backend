@@ -48,7 +48,8 @@ export const selectCategories = async(req:AuthRequest,res:Response,next:NextFunc
 export const editProfile = async (req:AuthRequest,res:Response,next:NextFunction)=>{
     try{
         const {userId,firstName,lastName,email,phone,password,confirmPassword,dob,preferences} = req.body
-
+        console.log("pref",preferences);
+        
         const dataToUpdate: Partial<{ 
             firstName: string; 
             lastName: string; 
@@ -77,12 +78,14 @@ export const editProfile = async (req:AuthRequest,res:Response,next:NextFunction
         dataToUpdate.preferences = preferences;
       }
   
-      const updatedUser = await userModel.findByIdAndUpdate(userId, { $set: dataToUpdate }, { new: true });
+      const updatedUser = await userModel.findByIdAndUpdate(userId, { $set: dataToUpdate }, { new: true }).populate("preferences")
   
       if (!updatedUser) {
         res.status(404).json({ success: false, message: "User not found" });
         return
       }
+      console.log("edited...",updatedUser);
+      
       res.json({ success: true, message: "Profile updated successfully", user: updatedUser });
     }catch(error){
         next(error)
