@@ -67,8 +67,13 @@ FeedHive is a modern blogging platform built with **TypeScript**, **React**, **N
 
 3. **Create .env file in `server/` with necessary keys**
    ```env
-   MONGO_URI=your_mongodb_connection_string
-   JWT_SECRET=your_secret_key
+   PORT=server_port
+   MONGODB_ORIGIN=your_mongodb_connection_string (eg:mongodb://localhost:27017/favFeed)
+   FRONTEND_URL=your_frontend_url (eg:http://localhost:5173)
+   ACCESS_TOKEN_SECRET=your_access_token_scecret
+   CLOUDINARY_CLOUD_NAME=cloudinaly_cloud_name
+   CLOUDINARY_API_KEY=your_cloudinary_api_key
+   CLOUDINARY_API_SECRET=your_cloudinary_api_secret 
    ```
 
 4. **Run the project**
