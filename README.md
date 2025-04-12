@@ -32,6 +32,7 @@ FeedHive is a modern blogging platform built with **TypeScript**, **React**, **N
 ### Frontend
 - **React**
 - **TypeScript**
+- **Redux tool kit**
 
 ### Backend
 - **Node.js**
