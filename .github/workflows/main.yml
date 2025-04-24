@@ -30,14 +30,14 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H 51.20.83.53 >> ~/.ssh/known_hosts
 
-      - name:  Deploy to EC2
-        run: | 
-             ssh -tt -i ~/.ssh/id_ed25519 ubuntu@51.20.83.53 << EOF
-              cd ~/FeedHive---Backend
-              git pull origin main
-              npm install
-              npm run build 
-              pm2 restart all || pm2 start dist/index.js --name "feedhive"
-             EOF 
+          - name:  Deploy to EC2
+            run: | 
+              ssh -tt -i ~/.ssh/id_ed25519 ubuntu@51.20.83.53 << EOF
+          cd ~/FeedHive---Backend
+          git pull origin main
+          npm install
+          npm run build 
+          pm2 restart all || pm2 start dist/index.js --name "feedhive"
+          EOF
 
 
