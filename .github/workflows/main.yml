@@ -32,12 +32,12 @@ jobs:
 
       - name:  Deploy to EC2
         run: | 
-            ssh -tt -i ~/.ssh/id_ed25519 ubuntu@51.20.83.53 << EOF
-            cd ~/FeedHive---Backend
-            git pull origin main
-            npm install
-            npm run build 
-            pm2 restart all || pm2 start dist/index.js --name "feedhive"
-            EOF 
+             ssh -tt -i ~/.ssh/id_ed25519 ubuntu@51.20.83.53 << EOF
+              cd ~/FeedHive---Backend
+              git pull origin main
+              npm install
+              npm run build 
+              pm2 restart all || pm2 start dist/index.js --name "feedhive"
+             EOF 
 
 
