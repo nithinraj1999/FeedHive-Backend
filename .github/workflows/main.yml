@@ -36,9 +36,8 @@ jobs:
             cd ~/FeedHive---Backend
             git pull origin main
             npm install
-            npm run build
+            npm run build 
             pm2 restart all || pm2 start dist/index.js --name "feedhive"
           EOF
-
 
 
