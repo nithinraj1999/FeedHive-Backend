@@ -31,7 +31,7 @@ jobs:
           ssh-keyscan -H 51.20.83.53 >> ~/.ssh/known_hosts
 
       - name:  Deploy to EC2
-        run: |
+        run: | 
           ssh -i ~/.ssh/id_ed25519 ubuntu@51.20.83.53 << 'EOF'
             cd ~/FeedHive---Backend
             git pull origin main
