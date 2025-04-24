@@ -31,15 +31,14 @@ jobs:
           ssh-keyscan -H 51.20.83.53 >> ~/.ssh/known_hosts
 
       - name:  Deploy to EC2
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.EC2_HOST }}
-                username: ${{ secrets.EC2_USER }}
-                key: ${{ secrets.SSH_PRIVATE_KEY }}
-                script: |
-                 cd FeedHive---Backend
-                 git pull origin main
-                 npm install
-                pm2 restart all || pm2 start dist/index.js --name "feedhive"
+        run: |
+          ssh -i ~/.ssh/id_ed25519 ubuntu@51.20.83.53 << 'EOF'
+            cd ~/FeedHive---Backend
+            git pull origin main
+            npm install
+            npm run build
+            pm2 restart all || pm2 start dist/index.js --name "feedhive"
+          EOF
+
 
 
