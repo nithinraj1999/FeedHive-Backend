@@ -18,7 +18,7 @@ app.use(
     credentials: true,  
   })
 );
-console.log(process.env.FRONTEND_URL);
+console.log("frontend.......",process.env.FRONTEND_URL);
 
 app.use(cookieParser());
 
