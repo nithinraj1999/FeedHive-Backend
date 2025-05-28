@@ -16,21 +16,21 @@ app.use(
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], 
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,  
-  })
+  }) 
 );
 console.log("frontend.......",process.env.FRONTEND_URL);
 
 app.use(cookieParser());
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4000;
 
 connectToMongoDB()
 app.use(express.json({ limit: '2mb' }))
 app.use(express.urlencoded({ limit: '2mb', extended: true }))
  
 app.use('/api/',userRoutes)
-app.use('/api/admin',adminRoutes) 
-
+app.use('/api/admin',adminRoutes)  
+ 
 app.use(ErrorHandler)
 
 app.listen(PORT, () => {

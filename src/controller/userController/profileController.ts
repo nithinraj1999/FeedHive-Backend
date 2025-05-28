@@ -21,6 +21,8 @@ export const getprofileInfo = async (req:AuthRequest,res:Response,next:NextFunct
  
 export const getAllCategories = async(req:AuthRequest,res:Response,next:NextFunction)=>{
     try{
+        console.log("categories......");
+        
         const allCategories = await categoryModel.find({},{_id:1,categoryName:1})
         res.json({success:true,allCategories:allCategories})
     }catch(error){

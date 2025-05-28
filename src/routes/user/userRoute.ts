@@ -22,8 +22,8 @@ router.post("/signup", signup);
 router.post("/signin", signin);
 
 router.post("/get-profile-info", authenticateUser, getprofileInfo);
-router.get("/get-all-categories",authenticateUser, getAllCategories);
-router.post('/select-category',authenticateUser,selectCategories)
+router.get("/get-all-categories", getAllCategories);
+router.post('/select-category',selectCategories)
 router.post("/create-article",authenticateUser, upload.single("image"),creteArticle);
 router.post("/view-article",authenticateUser,viewAricle)
 router.patch("/edit-profile",authenticateUser,editProfile);
